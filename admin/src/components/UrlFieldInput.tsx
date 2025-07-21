@@ -29,6 +29,7 @@ type UrlMetadata = {
   image?: string;
   url?: string;
   domain?: string;
+  description?: string;
 };
 
 const PreviewCard = styled(Box)`
@@ -57,6 +58,22 @@ const PreviewImage = styled.img`
   margin-bottom: 12px;
 `;
 
+const PreviewTitle = styled(Typography)`
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 8px;
+`;
+
+const PreviewLink = styled.a`
+  color: #0099e5;
+  text-decoration: underline;
+  font-weight: 500;
+  font-size: 1rem;
+  margin-top: 8px;
+  display: inline-block;
+`;
+
 const UrlFieldInput = React.forwardRef<HTMLButtonElement, UrlFieldInputProps>(
   ({ hint, disabled, labelAction, label, name, required, attribute, onChange, error, ...props }, forwardedRef) => {
     const [inputValue, setInputValue] = useState('');
@@ -76,28 +93,21 @@ const UrlFieldInput = React.forwardRef<HTMLButtonElement, UrlFieldInputProps>(
       setFetchError(null);
 
       try {
-        console.log('Fetching metadata for:', url);
-        // const response = await fetch('/admin/url-metadata', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({ url }),
-        // });
-
-        // if (!response.ok) {
-        //   throw new Error(`Metadata fetch failed: ${response.status} ${response.statusText}`);
-        // }
-
-        // const data = await response.json();
-        // console.log('Metadata received:', data);
-        // setMetadata(data.metadata);
-        setMetadata({
-          title: `Seeing Lady Gaga at San Francisco's Chase Center This Week? From Bag Policy to Parking, What to Know`,
-          image: `https://cdn.kqed.org/wp-content/uploads/sites/10/2025/07/Lady-Gaga-Mayhem-Tour-SF-1.png`,
-          url: url,
-          domain: 'kqed.org',
+        const response = await fetch('/url-preview-field/url-metadata', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url }),
         });
+
+        if (!response.ok) {
+          throw new Error(`Metadata fetch failed: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Metadata received:', JSON.stringify(data));
+        setMetadata(data);
       } catch (err) {
         console.error('Error fetching URL metadata:', err);
         const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
@@ -163,7 +173,7 @@ const UrlFieldInput = React.forwardRef<HTMLButtonElement, UrlFieldInputProps>(
           {/* Social Share Card Preview */}
           {metadata && !loading && !fetchError && (
             <PreviewCard>
-              <Flex direction="column" gap={3}>
+              <Flex direction="column" gap={3} alignItems="flex-start">
                 {/* URL and domain */}
                 <UrlPreview>
                   <Globe width="12" height="12" />
@@ -182,11 +192,20 @@ const UrlFieldInput = React.forwardRef<HTMLButtonElement, UrlFieldInputProps>(
                 )}
 
                 {/* Title */}
-                <Typography variant="pi" fontWeight="bold" textColor="black">
-                  {metadata.title}
-                </Typography>
+                {metadata.title && (
+                  <PreviewTitle as="div">{metadata.title}</PreviewTitle>
+                )}
 
-                
+                {/* Link */}
+                {metadata.url && (
+                  <PreviewLink
+                    href={metadata.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Read the article on {metadata.domain} &gt;
+                  </PreviewLink>
+                )}
               </Flex>
             </PreviewCard>
           )}

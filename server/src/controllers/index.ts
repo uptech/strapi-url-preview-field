@@ -1,1 +1,5 @@
-export default {};
+import controller from './controller';
+
+export default {
+  controller,
+};
