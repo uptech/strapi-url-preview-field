@@ -65,10 +65,10 @@
     "kind": "plugin",
     "name": "url-preview-field",
     "displayName": "URL Share Preview",
-    "description": ""
+    "description": "A custom field plugin for Strapi that allows you to preview the URL. The preview is similar to the one you see when you share a link on social media."
   },
   "name": "url-preview-field",
-  "description": "",
+  "description": "A custom field plugin for Strapi that allows you to preview the URL. The preview is similar to the one you see when you share a link on social media.",
   "license": "MIT",
   "author": "chillbrodev <jon@uptechstudio.com>"
 }

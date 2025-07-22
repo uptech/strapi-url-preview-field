@@ -24,7 +24,7 @@ export default {
       },
       intlDescription: {
         id: 'url-preview-field.url.description',
-        defaultMessage: 'Enter an Article URL to see a social share card preview.',
+        defaultMessage: 'Enter an URL to see a social share card preview.',
       },
       icon: UrlFieldIcon,
       components: {

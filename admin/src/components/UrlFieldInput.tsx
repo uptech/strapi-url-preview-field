@@ -76,7 +76,8 @@ const PreviewLink = styled.a`
 
 const UrlFieldInput = React.forwardRef<HTMLButtonElement, UrlFieldInputProps>(
   ({ hint, disabled, labelAction, label, name, required, attribute, onChange, error, ...props }, forwardedRef) => {
-    const [inputValue, setInputValue] = useState('');
+    const { value } = useField(name);
+    const [inputValue, setInputValue] = useState(value || '');
     const [metadata, setMetadata] = useState<UrlMetadata | null>(null);
     const [loading, setLoading] = useState(false);
     const [fetchError, setFetchError] = useState<string | null>(null);
@@ -132,6 +133,11 @@ const UrlFieldInput = React.forwardRef<HTMLButtonElement, UrlFieldInputProps>(
       return () => clearTimeout(timeoutId);
     }, [inputValue]);
 
+    // Keep inputValue in sync with form value
+    useEffect(() => {
+      setInputValue(value || '');
+    }, [value]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
       setInputValue(newValue);
@@ -149,7 +155,7 @@ const UrlFieldInput = React.forwardRef<HTMLButtonElement, UrlFieldInputProps>(
           
           <Field.Input 
             type="url" 
-            placeholder="https://example.com/article"
+            placeholder="https://example.com"
             value={inputValue}
             onChange={handleChange}
             disabled={disabled}
@@ -203,7 +209,7 @@ const UrlFieldInput = React.forwardRef<HTMLButtonElement, UrlFieldInputProps>(
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Read the article on {metadata.domain} &gt;
+                    View on {metadata.domain} &gt;
                   </PreviewLink>
                 )}
               </Flex>
